@@ -1,0 +1,33 @@
+version: '3.8'
+
+services:
+  postgres:
+    environment:
+      POSTGRES_USER: dev
+      POSTGRES_PASSWORD: dev123
+      POSTGRES_DB: BulkLoadDB_Dev
+    ports:
+      - "5433:5432"  # Different port for dev to avoid conflicts
+
+  redis:
+    ports:
+      - "6380:6379"  # Different port for dev
+
+  rabbitmq:
+    ports:
+      - "5673:5672"   # Different AMQP port for dev
+      - "15673:15672" # Different Management UI port for dev
+
+  auth-api:
+    environment:
+      - ASPNETCORE_ENVIRONMENT=Development
+      - ConnectionStrings__Database=Host=postgres;Port=5432;Database=BulkLoadDB_Dev;Username=dev;Password=dev123
+    ports:
+      - "5027:80"  # Different port for dev
+
+  apigateway:
+    environment:
+      - ASPNETCORE_ENVIRONMENT=Development
+      - DownstreamServices__AuthApi__Url=http://auth-api:80
+    ports:
+      - "5187:80"  # Different port for dev

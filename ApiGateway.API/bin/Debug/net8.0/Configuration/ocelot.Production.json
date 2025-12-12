@@ -1,0 +1,80 @@
+{
+  "Routes": [
+    {
+      "UpstreamPathTemplate": "/auth/{everything}",
+      "UpstreamHttpMethod": [ "GET", "POST", "PUT", "DELETE", "PATCH" ],
+      "DownstreamPathTemplate": "/api/auth/{everything}",
+      "DownstreamScheme": "http",
+      "DownstreamHostAndPorts": [
+        {
+          "Host": "auth-api",
+          "Port": 80
+        }
+      ],
+      "Key": "Auth",
+      "QoSOptions": {
+        "ExceptionsAllowedBeforeBreaking": 3,
+        "DurationOfBreak": 60000,
+        "TimeoutValue": 5000
+      },
+      "RateLimitOptions": {
+        "ClientWhitelist": [],
+        "EnableRateLimiting": true,
+        "Period": "1s",
+        "PeriodTimespan": 1,
+        "Limit": 10
+      },
+      "FileCacheOptions": {
+        "TtlSeconds": 30,
+        "Region": "AuthCache"
+      }
+    },
+    {
+      "UpstreamPathTemplate": "/users/{everything}",
+      "UpstreamHttpMethod": [ "GET", "POST", "PUT", "DELETE", "PATCH" ],
+      "DownstreamPathTemplate": "/api/users/{everything}",
+      "DownstreamScheme": "http",
+      "DownstreamHostAndPorts": [
+        {
+          "Host": "auth-api",
+          "Port": 80
+        }
+      ],
+      "Key": "Users",
+      "AuthenticationOptions": {
+        "AuthenticationProviderKey": "Bearer",
+        "AllowedScopes": []
+      },
+      "QoSOptions": {
+        "ExceptionsAllowedBeforeBreaking": 3,
+        "DurationOfBreak": 60000,
+        "TimeoutValue": 5000
+      },
+      "RateLimitOptions": {
+        "ClientWhitelist": [],
+        "EnableRateLimiting": true,
+        "Period": "1s",
+        "PeriodTimespan": 1,
+        "Limit": 20
+      },
+      "FileCacheOptions": {
+        "TtlSeconds": 15,
+        "Region": "UsersCache"
+      }
+    }
+  ],
+  "GlobalConfiguration": {
+    "BaseUrl": "http://apigateway:80",
+    "RateLimitOptions": {
+      "DisableRateLimitHeaders": false,
+      "QuotaExceededMessage": "Too many requests. Please try again later.",
+      "HttpStatusCode": 429,
+      "ClientIdHeader": "X-ClientId"
+    },
+    "QoSOptions": {
+      "ExceptionsAllowedBeforeBreaking": 3,
+      "DurationOfBreak": 60000,
+      "TimeoutValue": 5000
+    }
+  }
+}

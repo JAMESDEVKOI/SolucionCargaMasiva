@@ -1,0 +1,72 @@
+{
+  "Routes": [
+    {
+      "UpstreamPathTemplate": "/auth/{everything}",
+      "UpstreamHttpMethod": [ "GET", "POST", "PUT", "DELETE", "PATCH" ],
+      "DownstreamPathTemplate": "/api/auth/{everything}",
+      "DownstreamScheme": "http",
+      "DownstreamHostAndPorts": [
+        {
+          "Host": "localhost",
+          "Port": 5026
+        }
+      ],
+      "Key": "Auth",
+      "QoSOptions": {
+        "ExceptionsAllowedBeforeBreaking": 5,
+        "DurationOfBreak": 10000,
+        "TimeoutValue": 30000
+      },
+      "RateLimitOptions": {
+        "ClientWhitelist": [],
+        "EnableRateLimiting": true,
+        "Period": "1s",
+        "PeriodTimespan": 1,
+        "Limit": 100
+      }
+    },
+    {
+      "UpstreamPathTemplate": "/users/{everything}",
+      "UpstreamHttpMethod": [ "GET", "POST", "PUT", "DELETE", "PATCH" ],
+      "DownstreamPathTemplate": "/api/users/{everything}",
+      "DownstreamScheme": "http",
+      "DownstreamHostAndPorts": [
+        {
+          "Host": "localhost",
+          "Port": 5026
+        }
+      ],
+      "Key": "Users",
+      "AuthenticationOptions": {
+        "AuthenticationProviderKey": "Bearer",
+        "AllowedScopes": []
+      },
+      "QoSOptions": {
+        "ExceptionsAllowedBeforeBreaking": 5,
+        "DurationOfBreak": 10000,
+        "TimeoutValue": 30000
+      },
+      "RateLimitOptions": {
+        "ClientWhitelist": [],
+        "EnableRateLimiting": true,
+        "Period": "1s",
+        "PeriodTimespan": 1,
+        "Limit": 100
+      }
+    }
+  ],
+  "GlobalConfiguration": {
+    "BaseUrl": "http://localhost:5186",
+    "RateLimitOptions": {
+      "DisableRateLimitHeaders": false,
+      "QuotaExceededMessage": "Rate limit exceeded in Development. Please try again later.",
+      "HttpStatusCode": 429,
+      "ClientIdHeader": "X-ClientId"
+    },
+    "QoSOptions": {
+      "ExceptionsAllowedBeforeBreaking": 5,
+      "DurationOfBreak": 10000,
+      "TimeoutValue": 30000
+    }
+  }
+}

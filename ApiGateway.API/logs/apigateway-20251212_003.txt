@@ -1,0 +1,18 @@
+2025-12-12 10:10:45.156 -05:00 [INF] API Gateway started successfully on Development
+2025-12-12 10:10:45.335 -05:00 [INF] Now listening on: http://localhost:5186
+2025-12-12 10:10:45.440 -05:00 [INF] Application started. Press Ctrl+C to shut down.
+2025-12-12 10:10:45.444 -05:00 [INF] Hosting environment: Development
+2025-12-12 10:10:45.448 -05:00 [INF] Content root path: D:\proyect2025\Net\SENIOR\SolucionCargaMasiva\ApiGateway.API
+2025-12-12 10:10:46.417 -05:00 [INF] Incoming Request: GET /swagger/index.html - TraceId: 0HNHPI2G1TD7J:00000001
+2025-12-12 10:10:46.473 -05:00 [INF] Request Completed: GET /swagger/index.html - Status: 200 - Duration: 56ms - TraceId: 0HNHPI2G1TD7J:00000001
+2025-12-12 10:10:46.641 -05:00 [INF] Incoming Request: GET /swagger/v1/swagger.json - TraceId: 0HNHPI2G1TD7L:00000002
+2025-12-12 10:10:46.681 -05:00 [INF] Request Completed: GET /swagger/v1/swagger.json - Status: 200 - Duration: 39ms - TraceId: 0HNHPI2G1TD7L:00000002
+[2025-12-12 10:28:06.969 -05:00] [INF] API Gateway started successfully on Development {"Application":"ApiGateway"}
+[2025-12-12 10:28:07.179 -05:00] [INF] Now listening on: http://localhost:5186 {"EventId":{"Id":14,"Name":"ListeningOnAddress"},"SourceContext":"Microsoft.Hosting.Lifetime","Application":"ApiGateway"}
+[2025-12-12 10:28:07.345 -05:00] [INF] Application started. Press Ctrl+C to shut down. {"SourceContext":"Microsoft.Hosting.Lifetime","Application":"ApiGateway"}
+[2025-12-12 10:28:07.360 -05:00] [INF] Hosting environment: Development {"SourceContext":"Microsoft.Hosting.Lifetime","Application":"ApiGateway"}
+[2025-12-12 10:28:07.362 -05:00] [INF] Content root path: D:\proyect2025\Net\SENIOR\SolucionCargaMasiva\ApiGateway.API {"SourceContext":"Microsoft.Hosting.Lifetime","Application":"ApiGateway"}
+[2025-12-12 10:28:07.627 -05:00] [INF] Incoming Request: GET /swagger/index.html - TraceId: 0HNHPIC6E64IR:00000001 {"SourceContext":"ApiGateway.API.Middlewares.RequestLoggingMiddleware","RequestId":"0HNHPIC6E64IR:00000001","RequestPath":"/swagger/index.html","ConnectionId":"0HNHPIC6E64IR","Application":"ApiGateway"}
+[2025-12-12 10:28:07.704 -05:00] [INF] Request Completed: GET /swagger/index.html - Status: 200 - Duration: 78ms - TraceId: 0HNHPIC6E64IR:00000001 {"SourceContext":"ApiGateway.API.Middlewares.RequestLoggingMiddleware","RequestId":"0HNHPIC6E64IR:00000001","RequestPath":"/swagger/index.html","ConnectionId":"0HNHPIC6E64IR","Application":"ApiGateway"}
+[2025-12-12 10:28:07.788 -05:00] [INF] Incoming Request: GET /swagger/v1/swagger.json - TraceId: 0HNHPIC6E64IS:00000002 {"SourceContext":"ApiGateway.API.Middlewares.RequestLoggingMiddleware","RequestId":"0HNHPIC6E64IS:00000002","RequestPath":"/swagger/v1/swagger.json","ConnectionId":"0HNHPIC6E64IS","Application":"ApiGateway"}
+[2025-12-12 10:28:07.822 -05:00] [INF] Request Completed: GET /swagger/v1/swagger.json - Status: 200 - Duration: 33ms - TraceId: 0HNHPIC6E64IS:00000002 {"SourceContext":"ApiGateway.API.Middlewares.RequestLoggingMiddleware","RequestId":"0HNHPIC6E64IS:00000002","RequestPath":"/swagger/v1/swagger.json","ConnectionId":"0HNHPIC6E64IS","Application":"ApiGateway"}

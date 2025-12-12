@@ -1,0 +1,26 @@
+2025-12-12 09:58:31.103 -05:00 [INF] API Gateway started successfully on Development
+2025-12-12 09:58:31.309 -05:00 [INF] Now listening on: http://localhost:5186
+2025-12-12 09:58:31.414 -05:00 [INF] Application started. Press Ctrl+C to shut down.
+2025-12-12 09:58:31.418 -05:00 [INF] Hosting environment: Development
+2025-12-12 09:58:31.421 -05:00 [INF] Content root path: D:\proyect2025\Net\SENIOR\SolucionCargaMasiva\ApiGateway.API
+2025-12-12 09:58:32.909 -05:00 [INF] Incoming Request: GET /swagger - TraceId: 0HNHPHRL9PJOB:00000001
+2025-12-12 09:58:32.926 -05:00 [INF] Request Completed: GET /swagger - Status: 301 - Duration: 18ms - TraceId: 0HNHPHRL9PJOB:00000001
+2025-12-12 09:58:32.973 -05:00 [INF] Incoming Request: GET /swagger/index.html - TraceId: 0HNHPHRL9PJOB:00000002
+2025-12-12 09:58:33.032 -05:00 [INF] Incoming Request: GET /swagger/swagger-ui.css - TraceId: 0HNHPHRL9PJOC:00000001
+2025-12-12 09:58:33.033 -05:00 [INF] Incoming Request: GET /swagger/swagger-ui-bundle.js - TraceId: 0HNHPHRL9PJOD:00000001
+2025-12-12 09:58:33.025 -05:00 [INF] Request Completed: GET /swagger/index.html - Status: 200 - Duration: 51ms - TraceId: 0HNHPHRL9PJOB:00000002
+2025-12-12 09:58:33.032 -05:00 [INF] Incoming Request: GET /swagger/swagger-ui-standalone-preset.js - TraceId: 0HNHPHRL9PJOE:00000001
+2025-12-12 09:58:33.086 -05:00 [INF] Request Completed: GET /swagger/swagger-ui-standalone-preset.js - Status: 200 - Duration: 54ms - TraceId: 0HNHPHRL9PJOE:00000001
+2025-12-12 09:58:33.101 -05:00 [INF] Request Completed: GET /swagger/swagger-ui-bundle.js - Status: 200 - Duration: 68ms - TraceId: 0HNHPHRL9PJOD:00000001
+2025-12-12 09:58:33.087 -05:00 [INF] Request Completed: GET /swagger/swagger-ui.css - Status: 200 - Duration: 55ms - TraceId: 0HNHPHRL9PJOC:00000001
+2025-12-12 09:58:33.241 -05:00 [INF] Incoming Request: GET /swagger/v1/swagger.json - TraceId: 0HNHPHRL9PJOD:00000002
+2025-12-12 09:58:33.273 -05:00 [INF] Request Completed: GET /swagger/v1/swagger.json - Status: 200 - Duration: 32ms - TraceId: 0HNHPHRL9PJOD:00000002
+[2025-12-12 10:10:45.156 -05:00] [INF] API Gateway started successfully on Development {"Application":"ApiGateway"}
+[2025-12-12 10:10:45.335 -05:00] [INF] Now listening on: http://localhost:5186 {"EventId":{"Id":14,"Name":"ListeningOnAddress"},"SourceContext":"Microsoft.Hosting.Lifetime","Application":"ApiGateway"}
+[2025-12-12 10:10:45.440 -05:00] [INF] Application started. Press Ctrl+C to shut down. {"SourceContext":"Microsoft.Hosting.Lifetime","Application":"ApiGateway"}
+[2025-12-12 10:10:45.444 -05:00] [INF] Hosting environment: Development {"SourceContext":"Microsoft.Hosting.Lifetime","Application":"ApiGateway"}
+[2025-12-12 10:10:45.448 -05:00] [INF] Content root path: D:\proyect2025\Net\SENIOR\SolucionCargaMasiva\ApiGateway.API {"SourceContext":"Microsoft.Hosting.Lifetime","Application":"ApiGateway"}
+[2025-12-12 10:10:46.417 -05:00] [INF] Incoming Request: GET /swagger/index.html - TraceId: 0HNHPI2G1TD7J:00000001 {"SourceContext":"ApiGateway.API.Middlewares.RequestLoggingMiddleware","RequestId":"0HNHPI2G1TD7J:00000001","RequestPath":"/swagger/index.html","ConnectionId":"0HNHPI2G1TD7J","Application":"ApiGateway"}
+[2025-12-12 10:10:46.473 -05:00] [INF] Request Completed: GET /swagger/index.html - Status: 200 - Duration: 56ms - TraceId: 0HNHPI2G1TD7J:00000001 {"SourceContext":"ApiGateway.API.Middlewares.RequestLoggingMiddleware","RequestId":"0HNHPI2G1TD7J:00000001","RequestPath":"/swagger/index.html","ConnectionId":"0HNHPI2G1TD7J","Application":"ApiGateway"}
+[2025-12-12 10:10:46.641 -05:00] [INF] Incoming Request: GET /swagger/v1/swagger.json - TraceId: 0HNHPI2G1TD7L:00000002 {"SourceContext":"ApiGateway.API.Middlewares.RequestLoggingMiddleware","RequestId":"0HNHPI2G1TD7L:00000002","RequestPath":"/swagger/v1/swagger.json","ConnectionId":"0HNHPI2G1TD7L","Application":"ApiGateway"}
+[2025-12-12 10:10:46.681 -05:00] [INF] Request Completed: GET /swagger/v1/swagger.json - Status: 200 - Duration: 39ms - TraceId: 0HNHPI2G1TD7L:00000002 {"SourceContext":"ApiGateway.API.Middlewares.RequestLoggingMiddleware","RequestId":"0HNHPI2G1TD7L:00000002","RequestPath":"/swagger/v1/swagger.json","ConnectionId":"0HNHPI2G1TD7L","Application":"ApiGateway"}
