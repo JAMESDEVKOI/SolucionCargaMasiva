@@ -61,6 +61,57 @@ services:
       retries: 5
     restart: unless-stopped
 
+  # SeaweedFS Master
+  seaweedfs-master:
+    image: chrislusf/seaweedfs:latest
+    container_name: bulkload-seaweedfs-master
+    command: master -ip=seaweedfs-master -port=9333
+    ports:
+      - "9333:9333"
+    volumes:
+      - seaweedfs-master-data:/data
+    networks:
+      - bulkload-network
+    healthcheck:
+      test: ["CMD", "sh", "-c", "wget -qO- http://localhost:9333/cluster/status || exit 0"]
+      interval: 5s
+      timeout: 3s
+      retries: 10
+      start_period: 10s
+    restart: unless-stopped
+
+  # SeaweedFS Volume Server
+  seaweedfs-volume:
+    image: chrislusf/seaweedfs:latest
+    container_name: bulkload-seaweedfs-volume
+    command: volume -mserver=seaweedfs-master:9333 -port=8080
+    ports:
+      - "8080:8080"
+    volumes:
+      - seaweedfs-volume-data:/data
+    networks:
+      - bulkload-network
+    depends_on:
+      seaweedfs-master:
+        condition: service_healthy
+    restart: unless-stopped
+
+  # SeaweedFS Filer
+  seaweedfs-filer:
+    image: chrislusf/seaweedfs:latest
+    container_name: bulkload-seaweedfs-filer
+    command: filer -master=seaweedfs-master:9333
+    ports:
+      - "8888:8888"
+    volumes:
+      - seaweedfs-filer-data:/data
+    networks:
+      - bulkload-network
+    depends_on:
+      seaweedfs-master:
+        condition: service_healthy
+    restart: unless-stopped
+
   # Auth API Service
   auth-api:
     build:
@@ -94,6 +145,46 @@ services:
       start_period: 40s
     restart: unless-stopped
 
+  # FileControl API Service
+  filecontrol-api:
+    build:
+      context: .
+      dockerfile: FileControl.API/Dockerfile
+    container_name: bulkload-filecontrol-api
+    environment:
+      - ASPNETCORE_ENVIRONMENT=Production
+      - ASPNETCORE_URLS=http://+:80
+      - ConnectionStrings__Database=Host=postgres;Port=5432;Database=BulkLoadDB;Username=admin;Password=admin123
+      - JwtSettings__Secret=SuperSecretKey123!@#SuperSecretKey123!@#SuperSecretKey123!@#
+      - JwtSettings__Issuer=AuthAPI
+      - JwtSettings__Audience=BulkLoadClients
+      - JwtSettings__AccessTokenExpiryMinutes=60
+      - SeaweedFS__MasterUrl=http://seaweedfs-master:9333
+      - SeaweedFS__FilerUrl=http://seaweedfs-filer:8888
+      - RabbitMQ__Host=rabbitmq
+      - RabbitMQ__Port=5672
+      - RabbitMQ__Username=admin
+      - RabbitMQ__Password=admin123
+      - RabbitMQ__QueueName=carga_masiva
+    ports:
+      - "5027:80"
+    depends_on:
+      postgres:
+        condition: service_healthy
+      rabbitmq:
+        condition: service_healthy
+      seaweedfs-master:
+        condition: service_healthy
+    networks:
+      - bulkload-network
+    healthcheck:
+      test: ["CMD-SHELL", "wget -qO- http://localhost:80/health > /dev/null 2>&1 || exit 1"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+      start_period: 40s
+    restart: unless-stopped
+
   # API Gateway
   apigateway:
     build:
@@ -109,10 +200,12 @@ services:
       - JwtSettings__AccessTokenExpiryMinutes=60
       - JwtSettings__RefreshTokenExpiryDays=7
       - DownstreamServices__AuthApi__Url=http://auth-api:80
+      - DownstreamServices__FileControlApi__Url=http://filecontrol-api:80
     ports:
       - "5186:80"
     depends_on:
        - auth-api
+       - filecontrol-api
        - redis
     networks:
       - bulkload-network
@@ -122,6 +215,69 @@ services:
       timeout: 10s
       retries: 3
       start_period: 40s
+    restart: unless-stopped
+
+  # BulkProcessor Worker Service
+  bulkprocessor-worker:
+    build:
+      context: .
+      dockerfile: BulkProcessor.Worker/Dockerfile
+    container_name: bulkload-bulkprocessor-worker
+    environment:
+      - DOTNET_ENVIRONMENT=Production
+      - ConnectionStrings__DefaultConnection=Host=postgres;Port=5432;Database=BulkLoadDB;Username=admin;Password=admin123
+      - RabbitMQSettings__Host=rabbitmq
+      - RabbitMQSettings__Port=5672
+      - RabbitMQSettings__Username=admin
+      - RabbitMQSettings__Password=admin123
+      - RabbitMQSettings__CargaMasivaQueue=carga_masiva
+      - RabbitMQSettings__NotificacionesQueue=notificaciones
+      - RabbitMQSettings__CargaMasivaExchange=carga_masiva_exchange
+      - RabbitMQSettings__NotificacionesExchange=notificaciones_exchange
+      - SeaweedFSSettings__MasterUrl=http://seaweedfs-master:9333
+      - Serilog__MinimumLevel__Default=Information
+    depends_on:
+      postgres:
+        condition: service_healthy
+      rabbitmq:
+        condition: service_healthy
+      seaweedfs-master:
+        condition: service_healthy
+    networks:
+      - bulkload-network
+    restart: unless-stopped
+
+  # Notification Worker Service
+  notification-worker:
+    build:
+      context: .
+      dockerfile: Notification.Worker/Dockerfile
+    container_name: bulkload-notification-worker
+    environment:
+      - DOTNET_ENVIRONMENT=Production
+      - ConnectionStrings__DefaultConnection=Host=postgres;Port=5432;Database=BulkLoadDB;Username=admin;Password=admin123
+      - RabbitMQSettings__Host=rabbitmq
+      - RabbitMQSettings__Port=5672
+      - RabbitMQSettings__Username=admin
+      - RabbitMQSettings__Password=admin123
+      - RabbitMQSettings__NotificacionesQueue=notificaciones
+      - RabbitMQSettings__NotificacionesExchange=notificaciones.exchange
+      - SmtpSettings__Host=smtp.gmail.com
+      - SmtpSettings__Port=587
+      - SmtpSettings__User=jamescapchaflores97@gmail.com
+      - SmtpSettings__Password=your-app-password
+      - SmtpSettings__FromEmail=noreply@bulkload.com
+      - SmtpSettings__FromName=Sistema de Carga Masiva
+      - SmtpSettings__UseStartTLS=true
+      - SmtpSettings__UseSSL=false
+      - Serilog__MinimumLevel__Default=Information
+    depends_on:
+      postgres:
+        condition: service_healthy
+      rabbitmq:
+        condition: service_healthy
+    networks:
+      - bulkload-network
     restart: unless-stopped
 
 networks:
@@ -134,4 +290,10 @@ volumes:
   redis-data:
     driver: local
   rabbitmq-data:
+    driver: local
+  seaweedfs-master-data:
+    driver: local
+  seaweedfs-volume-data:
+    driver: local
+  seaweedfs-filer-data:
     driver: local
