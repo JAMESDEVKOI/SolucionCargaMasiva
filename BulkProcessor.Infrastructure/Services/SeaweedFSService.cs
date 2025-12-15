@@ -34,7 +34,11 @@ namespace BulkProcessor.Infrastructure.Services
                 _logger.LogInformation("Descargando archivo desde SeaweedFS. FileId: {FileId}", fileId);
 
                 // Obtener la ubicación del archivo desde el Master
-                var lookupUrl = $"{_settings.MasterUrl}/dir/lookup?volumeId={GetVolumeId(fileId)}";
+                var volumeId = GetVolumeId(fileId);
+                var lookupUrl = $"{_settings.MasterUrl}/dir/lookup?volumeId={volumeId}";
+
+                _logger.LogInformation("Lookup URL: {LookupUrl}, VolumeId extraído: {VolumeId}", lookupUrl, volumeId);
+
                 var lookupResponse = await _httpClient.GetAsync(lookupUrl, cancellationToken);
 
                 if (!lookupResponse.IsSuccessStatusCode)
@@ -43,10 +47,19 @@ namespace BulkProcessor.Infrastructure.Services
                 }
 
                 var lookupJson = await lookupResponse.Content.ReadAsStringAsync(cancellationToken);
-                var lookupData = System.Text.Json.JsonSerializer.Deserialize<SeaweedFSLookupResponse>(lookupJson);
+
+                _logger.LogInformation("Respuesta de lookup: {LookupJson}", lookupJson);
+
+                var lookupData = System.Text.Json.JsonSerializer.Deserialize<SeaweedFSLookupResponse>(
+                    lookupJson,
+                    new System.Text.Json.JsonSerializerOptions { PropertyNameCaseInsensitive = true });
 
                 if (lookupData?.Locations == null || !lookupData.Locations.Any())
                 {
+                    _logger.LogError("No se encontraron ubicaciones. lookupData es null: {IsNull}, Locations es null: {LocationsNull}, Locations count: {Count}",
+                        lookupData == null,
+                        lookupData?.Locations == null,
+                        lookupData?.Locations?.Count ?? 0);
                     throw new Exception("No se encontró ubicación para el archivo");
                 }
 

@@ -82,6 +82,20 @@ builder.Services.AddAuthentication(options =>
             Encoding.UTF8.GetBytes(jwtSecret)),
         ClockSkew = TimeSpan.Zero
     };
+
+    options.Events = new JwtBearerEvents
+    {
+        OnMessageReceived = context =>
+        {
+            // Try to read token from cookie first, then from Authorization header
+            var accessToken = context.Request.Cookies["access_token"];
+            if (!string.IsNullOrEmpty(accessToken))
+            {
+                context.Token = accessToken;
+            }
+            return Task.CompletedTask;
+        }
+    };
 });
 
 builder.Services.AddAuthorization();
@@ -100,9 +114,10 @@ builder.Services.AddCors(options =>
 {
     options.AddPolicy("AllowAll", policy =>
     {
-        policy.AllowAnyOrigin()
+        policy.WithOrigins("http://localhost:5173", "http://localhost:3000", "http://localhost:4200")
               .AllowAnyMethod()
-              .AllowAnyHeader();
+              .AllowAnyHeader()
+              .AllowCredentials(); // Required for cookies
     });
 });
 
@@ -130,6 +145,9 @@ using (var scope = app.Services.CreateScope())
 
 // Configure the HTTP request pipeline
 app.UseExceptionHandlingMiddleware();
+
+// Convert access_token cookie to Authorization header (before authentication)
+app.UseCookieToHeaderMiddleware();
 
 // Enable Swagger in all environments
 app.UseSwagger();

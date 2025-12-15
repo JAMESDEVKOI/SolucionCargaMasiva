@@ -10,22 +10,33 @@ namespace Auth.Application.UseCases.Auth.Commands.RefreshToken
     {
         private readonly IUserRepository _userRepository;
         private readonly IJwtProvider _jwtProvider;
+        private readonly ICookieAuthenticationProvider _cookieProvider;
 
         public RefreshTokenCommandHandler(
             IUserRepository userRepository,
-            IJwtProvider jwtProvider)
+            IJwtProvider jwtProvider,
+            ICookieAuthenticationProvider cookieProvider)
         {
             _userRepository = userRepository;
             _jwtProvider = jwtProvider;
+            _cookieProvider = cookieProvider;
         }
 
         public async Task<Result<RefreshTokenResponse>> Handle(
             RefreshTokenCommand request,
             CancellationToken cancellationToken)
         {
+
+            var refreshToken = _cookieProvider.GetRefreshToken();
+
+            if(string.IsNullOrEmpty(refreshToken)) 
+            { 
+               return Result.Failure<RefreshTokenResponse>( new Error("Auth.MissingRefreshToken", "Falta el refresh token en las cookies"));
+            }
+
             var isValid = await _jwtProvider.ValidateRefreshTokenAsync(
                 request.UserId,
-                request.RefreshToken,
+                refreshToken,
                 cancellationToken);
 
             if (!isValid)
@@ -55,6 +66,9 @@ namespace Auth.Application.UseCases.Auth.Commands.RefreshToken
                 request.UserId,
                 newRefreshToken,
                 cancellationToken);
+
+            // Establecer cookies con los nuevos tokens
+            _cookieProvider.SetAuthenticationCookies(newAccessToken, newRefreshToken);
 
             var response = new RefreshTokenResponse(newAccessToken, newRefreshToken);
 

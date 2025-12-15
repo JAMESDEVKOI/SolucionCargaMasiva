@@ -49,6 +49,9 @@ app.UseGlobalExceptionHandler();
 // Request logging
 app.UseRequestLogging();
 
+// Convert access_token cookie to Authorization header (before Ocelot authentication)
+app.UseCookieToHeaderMiddleware();
+
 // Swagger (only in development)
 if (app.Environment.IsDevelopment())
 {

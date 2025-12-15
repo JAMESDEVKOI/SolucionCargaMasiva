@@ -7,22 +7,22 @@
       "DownstreamScheme": "http",
       "DownstreamHostAndPorts": [
         {
-          "Host": "localhost",
-          "Port": 5026
+          "Host": "auth-api",
+          "Port": 80
         }
       ],
       "Key": "Auth",
       "QoSOptions": {
-        "ExceptionsAllowedBeforeBreaking": 5,
-        "DurationOfBreak": 10000,
-        "TimeoutValue": 30000
+        "ExceptionsAllowedBeforeBreaking": 3,
+        "DurationOfBreak": 30000,
+        "TimeoutValue": 10000
       },
       "RateLimitOptions": {
         "ClientWhitelist": [],
         "EnableRateLimiting": true,
         "Period": "1s",
         "PeriodTimespan": 1,
-        "Limit": 100
+        "Limit": 10
       }
     },
     {
@@ -32,8 +32,8 @@
       "DownstreamScheme": "http",
       "DownstreamHostAndPorts": [
         {
-          "Host": "localhost",
-          "Port": 5026
+          "Host": "auth-api",
+          "Port": 80
         }
       ],
       "Key": "Users",
@@ -42,16 +42,74 @@
         "AllowedScopes": []
       },
       "QoSOptions": {
-        "ExceptionsAllowedBeforeBreaking": 5,
-        "DurationOfBreak": 10000,
-        "TimeoutValue": 30000
+        "ExceptionsAllowedBeforeBreaking": 3,
+        "DurationOfBreak": 30000,
+        "TimeoutValue": 10000
       },
       "RateLimitOptions": {
         "ClientWhitelist": [],
         "EnableRateLimiting": true,
         "Period": "1s",
         "PeriodTimespan": 1,
-        "Limit": 100
+        "Limit": 20
+      }
+    },
+    {
+      "UpstreamPathTemplate": "/cargas",
+      "UpstreamHttpMethod": [ "GET", "POST" ],
+      "DownstreamPathTemplate": "/api/cargas",
+      "DownstreamScheme": "http",
+      "DownstreamHostAndPorts": [
+        {
+          "Host": "filecontrol-api",
+          "Port": 80
+        }
+      ],
+      "Key": "Cargas",
+      "AuthenticationOptions": {
+        "AuthenticationProviderKey": "Bearer",
+        "AllowedScopes": []
+      },
+      "QoSOptions": {
+        "ExceptionsAllowedBeforeBreaking": 3,
+        "DurationOfBreak": 30000,
+        "TimeoutValue": 15000
+      },
+      "RateLimitOptions": {
+        "ClientWhitelist": [],
+        "EnableRateLimiting": true,
+        "Period": "1m",
+        "PeriodTimespan": 60,
+        "Limit": 10
+      }
+    },
+    {
+      "UpstreamPathTemplate": "/cargas/{id}",
+      "UpstreamHttpMethod": [ "GET" ],
+      "DownstreamPathTemplate": "/api/cargas/{id}",
+      "DownstreamScheme": "http",
+      "DownstreamHostAndPorts": [
+        {
+          "Host": "filecontrol-api",
+          "Port": 80
+        }
+      ],
+      "Key": "CargasById",
+      "AuthenticationOptions": {
+        "AuthenticationProviderKey": "Bearer",
+        "AllowedScopes": []
+      },
+      "QoSOptions": {
+        "ExceptionsAllowedBeforeBreaking": 3,
+        "DurationOfBreak": 30000,
+        "TimeoutValue": 10000
+      },
+      "RateLimitOptions": {
+        "ClientWhitelist": [],
+        "EnableRateLimiting": true,
+        "Period": "1s",
+        "PeriodTimespan": 1,
+        "Limit": 20
       }
     }
   ],
@@ -59,14 +117,14 @@
     "BaseUrl": "http://localhost:5186",
     "RateLimitOptions": {
       "DisableRateLimitHeaders": false,
-      "QuotaExceededMessage": "Rate limit exceeded in Development. Please try again later.",
+      "QuotaExceededMessage": "Rate limit exceeded. Please try again later.",
       "HttpStatusCode": 429,
       "ClientIdHeader": "X-ClientId"
     },
     "QoSOptions": {
-      "ExceptionsAllowedBeforeBreaking": 5,
-      "DurationOfBreak": 10000,
-      "TimeoutValue": 30000
+      "ExceptionsAllowedBeforeBreaking": 3,
+      "DurationOfBreak": 30000,
+      "TimeoutValue": 10000
     }
   }
 }

@@ -77,11 +77,15 @@ namespace Auth.Infrastructure.Identity.Authentication.Cookie
         {
             var httpContext = GetHttpContext();
 
+            // IMPORTANTE: Las opciones deben coincidir EXACTAMENTE con las usadas al crear las cookies
+            // para que se eliminen correctamente
+
+            // Eliminar access_token con las mismas opciones que al crearlo
             var cookieOptions = new CookieOptions
             {
-                HttpOnly = true,
-                Secure = true,
-                SameSite = SameSiteMode.Strict,
+                HttpOnly = _settings.HttpOnly,
+                Secure = _settings.Secure,
+                SameSite = ParseSameSiteMode(_settings.SameSite),
                 Path = _settings.Path,
                 Domain = _settings.Domain,
                 Expires = DateTimeOffset.UtcNow.AddDays(-1)
@@ -89,6 +93,7 @@ namespace Auth.Infrastructure.Identity.Authentication.Cookie
 
             httpContext.Response.Cookies.Delete(_settings.AccessTokenCookieName, cookieOptions);
 
+            // Eliminar refresh_token con las mismas opciones que al crearlo
             var refreshCookieOptions = new CookieOptions
             {
                 HttpOnly = true,

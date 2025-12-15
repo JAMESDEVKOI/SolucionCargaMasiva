@@ -65,7 +65,7 @@ services:
   seaweedfs-master:
     image: chrislusf/seaweedfs:latest
     container_name: bulkload-seaweedfs-master
-    command: master -ip=seaweedfs-master -port=9333
+    command: master -ip=seaweedfs-master -port=9333 -mdir=/data
     ports:
       - "9333:9333"
     volumes:
@@ -84,7 +84,7 @@ services:
   seaweedfs-volume:
     image: chrislusf/seaweedfs:latest
     container_name: bulkload-seaweedfs-volume
-    command: volume -mserver=seaweedfs-master:9333 -port=8080
+    command: volume -mserver=seaweedfs-master:9333 -ip=seaweedfs-volume -port=8080 -dir=/data
     ports:
       - "8080:8080"
     volumes:
@@ -92,15 +92,14 @@ services:
     networks:
       - bulkload-network
     depends_on:
-      seaweedfs-master:
-        condition: service_healthy
+      - seaweedfs-master
     restart: unless-stopped
 
   # SeaweedFS Filer
   seaweedfs-filer:
     image: chrislusf/seaweedfs:latest
     container_name: bulkload-seaweedfs-filer
-    command: filer -master=seaweedfs-master:9333
+    command: filer -master=seaweedfs-master:9333 -ip=seaweedfs-filer -port=8888 -defaultStoreDir=/data
     ports:
       - "8888:8888"
     volumes:
@@ -108,8 +107,8 @@ services:
     networks:
       - bulkload-network
     depends_on:
-      seaweedfs-master:
-        condition: service_healthy
+      - seaweedfs-master
+      - seaweedfs-volume
     restart: unless-stopped
 
   # Auth API Service
@@ -128,6 +127,15 @@ services:
       - JwtSettings__AccessTokenExpiryMinutes=60
       - JwtSettings__RefreshTokenExpiryDays=7
       - RedisSettings__ConnectionString=redis:6379,abortConnect=false
+      - "RedisSettings__InstanceName=BulkLoadAuth:"
+      - RedisSettings__DefaultExpirationMinutes=60
+      - Authentication__Cookie__AccessTokenCookieName=access_token
+      - Authentication__Cookie__RefreshTokenCookieName=refresh_token
+      - Authentication__Cookie__HttpOnly=true
+      - Authentication__Cookie__Secure=false
+      - Authentication__Cookie__SameSite=Lax
+      - Authentication__Cookie__Path=/
+      - Authentication__Cookie__Domain=
     ports:
       - "5026:80"
     depends_on:
@@ -194,9 +202,9 @@ services:
     environment:
       - ASPNETCORE_ENVIRONMENT=Production
       - ASPNETCORE_URLS=http://+:80
-      - JwtSettings__Secret=SuperSecretKey123!@#SuperSecretKey123!@#SuperSecretKey123!@#
-      - JwtSettings__Issuer=ApiGateway
-      - JwtSettings__Audience=ApiGatewayClients
+      - JwtSettings__SecretKey=SuperSecretKey123!@#SuperSecretKey123!@#SuperSecretKey123!@#
+      - JwtSettings__Issuer=AuthAPI
+      - JwtSettings__Audience=BulkLoadClients
       - JwtSettings__AccessTokenExpiryMinutes=60
       - JwtSettings__RefreshTokenExpiryDays=7
       - DownstreamServices__AuthApi__Url=http://auth-api:80

@@ -9,13 +9,16 @@ namespace Auth.Application.UseCases.Auth.Commands.Logout
     {
         private readonly ISessionManager _sessionManager;
         private readonly IJwtProvider _jwtProvider;
+        private readonly ICookieAuthenticationProvider _cookieProvider;
 
         public LogoutCommandHandler(
             ISessionManager sessionManager,
-            IJwtProvider jwtProvider)
+            IJwtProvider jwtProvider,
+            ICookieAuthenticationProvider cookieProvider)
         {
             _sessionManager = sessionManager;
             _jwtProvider = jwtProvider;
+            _cookieProvider = cookieProvider;
         }
 
         public async Task<Result> Handle(
@@ -28,6 +31,9 @@ namespace Auth.Application.UseCases.Auth.Commands.Logout
             {
                 await _jwtProvider.RevokeTokenAsync(request.AccessToken, cancellationToken);
             }
+
+            // Eliminar cookies de autenticación
+            _cookieProvider.RemoveAuthenticationCookies();
 
             return Result.Success();
         }

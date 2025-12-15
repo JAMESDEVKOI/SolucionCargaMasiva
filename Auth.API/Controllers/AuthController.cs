@@ -1,6 +1,7 @@
 ﻿using Auth.Application.UseCases.Auth.Commands.Login;
 using Auth.Application.UseCases.Auth.Commands.Logout;
 using Auth.Application.UseCases.Auth.Commands.RefreshToken;
+using Auth.Application.UseCases.Auth.Queries.GetCurrentUser;
 using Auth.Application.UseCases.Users.Commands.CreateUser;
 using MediatR;
 using Microsoft.AspNetCore.Authorization;
@@ -77,9 +78,15 @@ namespace Auth.API.Controllers
         {
             var userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
             var sessionId = User.FindFirstValue("SessionId");
-            var accessToken = HttpContext.Request.Headers["Authorization"]
-                .ToString()
-                .Replace("Bearer ", "");
+
+            // Obtener el token de la cookie o del header Authorization
+            var accessToken = HttpContext.Request.Cookies["access_token"];
+            if (string.IsNullOrEmpty(accessToken))
+            {
+                accessToken = HttpContext.Request.Headers["Authorization"]
+                    .ToString()
+                    .Replace("Bearer ", "");
+            }
 
             if (string.IsNullOrEmpty(userId) || string.IsNullOrEmpty(sessionId))
             {
@@ -107,6 +114,23 @@ namespace Auth.API.Controllers
             CancellationToken cancellationToken)
         {
             var result = await _sender.Send(command, cancellationToken);
+
+            if (result.IsFailure)
+            {
+                return Unauthorized(new { error = result.Error.Code, message = result.Error.Message });
+            }
+
+            return Ok(result.Value);
+        }
+
+        [HttpGet("me")]
+        [AllowAnonymous]
+        [ProducesResponseType(typeof(CurrentUserResponse), StatusCodes.Status200OK)]
+        [ProducesResponseType(StatusCodes.Status401Unauthorized)]
+        public async Task<IActionResult> GetCurrentUser(CancellationToken cancellationToken)
+        {
+            var query = new GetCurrentUserQuery();
+            var result = await _sender.Send(query, cancellationToken);
 
             if (result.IsFailure)
             {

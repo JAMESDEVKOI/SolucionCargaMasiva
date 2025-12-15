@@ -32,10 +32,13 @@ namespace FileControl.Infrastructure.Storage
                 // 1. Solicitar asignación de fileId al Master
                 var assignUrl = $"{_settings.MasterUrl}/dir/assign";
                 var assignResponse = await _httpClient.GetAsync(assignUrl, cancellationToken);
+                Console.WriteLine("11112121");
                 assignResponse.EnsureSuccessStatusCode();
 
                 var assignContent = await assignResponse.Content.ReadAsStringAsync(cancellationToken);
-                var assignData = JsonSerializer.Deserialize<AssignResponse>(assignContent);
+                
+                var assignData = JsonSerializer.Deserialize<AssignResponse>(assignContent,
+                    new JsonSerializerOptions { PropertyNameCaseInsensitive = true });
 
                 if (assignData == null || string.IsNullOrEmpty(assignData.Fid))
                 {
@@ -72,21 +75,24 @@ namespace FileControl.Infrastructure.Storage
         {
             try
             {
-                // Obtener la ubicación del archivo desde el Master
-                var lookupUrl = $"{_settings.MasterUrl}/dir/lookup?volumeId={ExtractVolumeId(fileId)}";
+                var fid = NormalizeFid(fileId);
+
+                var volumeId = ExtractVolumeId(fid);
+                var lookupUrl = $"{_settings.MasterUrl}/dir/lookup?volumeId={Uri.EscapeDataString(volumeId)}";
+
                 var lookupResponse = await _httpClient.GetAsync(lookupUrl, cancellationToken);
                 lookupResponse.EnsureSuccessStatusCode();
 
                 var lookupContent = await lookupResponse.Content.ReadAsStringAsync(cancellationToken);
-                var lookupData = JsonSerializer.Deserialize<LookupResponse>(lookupContent);
+                var lookupData = JsonSerializer.Deserialize<LookupResponse>(lookupContent,
+                    new JsonSerializerOptions { PropertyNameCaseInsensitive = true });
 
                 if (lookupData?.Locations == null || !lookupData.Locations.Any())
-                {
-                    throw new InvalidOperationException($"No se encontró el archivo con FID: {fileId}");
-                }
+                    throw new InvalidOperationException($"No se encontró ubicación para el archivo (FID: {fid}, volumeId: {volumeId})");
 
-                // Descargar el archivo
-                var downloadUrl = $"http://{lookupData.Locations.First().Url}/{fileId}";
+                var volumeUrl = lookupData.Locations.First().Url;
+                var downloadUrl = $"http://{volumeUrl}/{fid}";
+
                 var response = await _httpClient.GetAsync(downloadUrl, cancellationToken);
                 response.EnsureSuccessStatusCode();
 
@@ -105,25 +111,25 @@ namespace FileControl.Infrastructure.Storage
         {
             try
             {
-                // Obtener la ubicación del archivo
-                var lookupUrl = $"{_settings.MasterUrl}/dir/lookup?volumeId={ExtractVolumeId(fileId)}";
+                var fid = NormalizeFid(fileId);
+                var volumeId = ExtractVolumeId(fid);
+
+                var lookupUrl = $"{_settings.MasterUrl}/dir/lookup?volumeId={Uri.EscapeDataString(volumeId)}";
                 var lookupResponse = await _httpClient.GetAsync(lookupUrl, cancellationToken);
                 lookupResponse.EnsureSuccessStatusCode();
 
                 var lookupContent = await lookupResponse.Content.ReadAsStringAsync(cancellationToken);
-                var lookupData = JsonSerializer.Deserialize<LookupResponse>(lookupContent);
+                var lookupData = JsonSerializer.Deserialize<LookupResponse>(lookupContent,
+                    new JsonSerializerOptions { PropertyNameCaseInsensitive = true });
 
                 if (lookupData?.Locations == null || !lookupData.Locations.Any())
-                {
                     return false;
-                }
 
-                // Eliminar el archivo
-                var deleteUrl = $"http://{lookupData.Locations.First().Url}/{fileId}";
+                var deleteUrl = $"http://{lookupData.Locations.First().Url}/{fid}";
                 var response = await _httpClient.DeleteAsync(deleteUrl, cancellationToken);
                 response.EnsureSuccessStatusCode();
 
-                _logger.LogInformation("Archivo con FID: {FileId} eliminado exitosamente", fileId);
+                _logger.LogInformation("Archivo con FID: {FileId} eliminado exitosamente", fid);
                 return true;
             }
             catch (Exception ex)
@@ -132,11 +138,16 @@ namespace FileControl.Infrastructure.Storage
                 return false;
             }
         }
+        private static string NormalizeFid(string fileId)
+        {            
+            return (fileId ?? string.Empty).Trim().Trim('"');
+        }
 
         private static string ExtractVolumeId(string fileId)
         {
-            var parts = fileId.Split(',');
-            return parts.Length > 0 ? parts[0] : fileId;
+            var fid = NormalizeFid(fileId);
+            var parts = fid.Split(',', StringSplitOptions.RemoveEmptyEntries | StringSplitOptions.TrimEntries);
+            return parts.Length > 0 ? parts[0] : fid;
         }
 
         private class AssignResponse

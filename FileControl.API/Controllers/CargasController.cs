@@ -1,4 +1,6 @@
 using FileControl.Application.Commands.CreateCargaArchivo;
+using FileControl.Application.Queries.GetCargas;
+using FileControl.Application.Queries.GetCargaById;
 using MediatR;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
@@ -17,6 +19,48 @@ namespace FileControl.API.Controllers
         {
             _sender = sender;
             _logger = logger;
+        }
+
+        /// <summary>
+        /// Obtener el historial de cargas masivas del usuario actual
+        /// </summary>
+        /// <param name="cancellationToken"></param>
+        /// <returns>Lista de cargas del usuario</returns>
+        [HttpGet]
+        [ProducesResponseType(StatusCodes.Status200OK)]
+        [ProducesResponseType(StatusCodes.Status401Unauthorized)]
+        [ProducesResponseType(StatusCodes.Status500InternalServerError)]
+        public async Task<IActionResult> GetCargas(CancellationToken cancellationToken)
+        {
+            var query = new GetCargasQuery();
+            var result = await _sender.Send(query, cancellationToken);
+
+            return Ok(result);
+        }
+
+        /// <summary>
+        /// Obtener el detalle de una carga específica
+        /// </summary>
+        /// <param name="id">ID de la carga</param>
+        /// <param name="cancellationToken"></param>
+        /// <returns>Detalle de la carga</returns>
+        [HttpGet("{id}")]
+        [ProducesResponseType(StatusCodes.Status200OK)]
+        [ProducesResponseType(StatusCodes.Status404NotFound)]
+        [ProducesResponseType(StatusCodes.Status401Unauthorized)]
+        [ProducesResponseType(StatusCodes.Status403Forbidden)]
+        [ProducesResponseType(StatusCodes.Status500InternalServerError)]
+        public async Task<IActionResult> GetCargaById(int id, CancellationToken cancellationToken)
+        {
+            var query = new GetCargaByIdQuery(id);
+            var result = await _sender.Send(query, cancellationToken);
+
+            if (result == null)
+            {
+                return NotFound(new { mensaje = $"No se encontró la carga con ID {id}" });
+            }
+
+            return Ok(result);
         }
 
         /// <summary>

@@ -12,15 +12,18 @@ namespace Auth.Application.UseCases.Auth.Commands.Login
         private readonly IUserRepository _userRepository;
         private readonly IJwtProvider _jwtProvider;
         private readonly ISessionManager _sessionManager;
+        private readonly ICookieAuthenticationProvider _cookieProvider;
 
         public LoginCommandHandler(
             IUserRepository userRepository,
             IJwtProvider jwtProvider,
-            ISessionManager sessionManager)
+            ISessionManager sessionManager,
+            ICookieAuthenticationProvider cookieProvider)
         {
             _userRepository = userRepository;
             _jwtProvider = jwtProvider;
             _sessionManager = sessionManager;
+            _cookieProvider = cookieProvider;
         }
 
         public async Task<Result<LoginResponse>> Handle(
@@ -55,6 +58,9 @@ namespace Auth.Application.UseCases.Auth.Commands.Login
                 user.Id!.Value.ToString(),
                 refreshToken,
                 cancellationToken);
+
+            // Establecer cookies con los tokens
+            _cookieProvider.SetAuthenticationCookies(accessToken, refreshToken);
 
             var response = new LoginResponse(
                 accessToken,
