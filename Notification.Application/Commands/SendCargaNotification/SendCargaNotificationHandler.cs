@@ -56,7 +56,7 @@ namespace Notification.Application.Commands.SendCargaNotification
                 }
 
                 // 3. Construir contenido del correo
-                var subject = BuildEmailSubject(notification.Estado);
+                var subject = BuildEmailSubject(notification.Estado, notification);
                 var body = BuildEmailBody(notification, carga);
 
                 // 4. Enviar correo
@@ -102,8 +102,23 @@ namespace Notification.Application.Commands.SendCargaNotification
                 // 5. Actualizar estado en BD
                 if (emailSent)
                 {
-                    // Email enviado OK - marcar como Notificado
-                    carga.Estado = CargaEstado.Notificado;
+                    // Email enviado OK - marcar como Notificado SOLO si fue exitoso
+                    // Si fue Rechazado, mantener ese estado
+                    if (carga.Estado == CargaEstado.Finalizado)
+                    {
+                        carga.Estado = CargaEstado.Notificado;
+                        _logger.LogInformation(
+                            "Actualizando carga {IdCarga} a estado Notificado",
+                            notification.IdCarga);
+                    }
+                    else if (carga.Estado == CargaEstado.Rechazado)
+                    {
+                        // Mantener estado Rechazado, solo marcar que se notificó
+                        _logger.LogInformation(
+                            "Carga {IdCarga} rechazada - email enviado pero estado permanece en Rechazado",
+                            notification.IdCarga);
+                    }
+
                     carga.NotificadoAt = DateTime.UtcNow;
                     carga.EmailStatus = "Sent";
                     carga.EmailError = null;
@@ -112,10 +127,6 @@ namespace Notification.Application.Commands.SendCargaNotification
                     {
                         carga.FechaFinProceso = notification.FechaFin;
                     }
-
-                    _logger.LogInformation(
-                        "Actualizando carga {IdCarga} a estado Notificado",
-                        notification.IdCarga);
                 }
                 else
                 {
@@ -147,8 +158,18 @@ namespace Notification.Application.Commands.SendCargaNotification
             }
         }
 
-        private string BuildEmailSubject(string estado)
+        private string BuildEmailSubject(string estado, CargaFinalizadaNotificationDto notification)
         {
+            // Si finalizó pero TODOS los registros fallaron, usar asunto de advertencia
+            if (estado == "Finalizado" &&
+                notification.Insertados.HasValue &&
+                notification.Insertados == 0 &&
+                notification.Fallidos.HasValue &&
+                notification.Fallidos > 0)
+            {
+                return "⚠️ Carga Completada - Todos los Registros Fallaron";
+            }
+
             return estado switch
             {
                 "Finalizado" => "✅ Carga Masiva Finalizada",
@@ -159,6 +180,22 @@ namespace Notification.Application.Commands.SendCargaNotification
 
         private string BuildEmailBody(CargaFinalizadaNotificationDto notification, Domain.Entities.CargaArchivo carga)
         {
+            // Determinar si todos los registros fallaron
+            bool todosLosRegistrosFallaron = notification.Estado == "Finalizado" &&
+                                             notification.Insertados.HasValue &&
+                                             notification.Insertados == 0 &&
+                                             notification.Fallidos.HasValue &&
+                                             notification.Fallidos > 0;
+
+            // Determinar el color del header y el título
+            string headerColor = notification.Estado == "Rechazado" ? "#f44336" :
+                                 todosLosRegistrosFallaron ? "#FF9800" :
+                                 "#4CAF50";
+
+            string headerTitle = notification.Estado == "Rechazado" ? "❌ Carga Rechazada" :
+                                 todosLosRegistrosFallaron ? "⚠️ Carga Completada con Errores" :
+                                 "✅ Carga Finalizada";
+
             var html = $@"
 <!DOCTYPE html>
 <html>
@@ -166,7 +203,7 @@ namespace Notification.Application.Commands.SendCargaNotification
     <style>
         body {{ font-family: Arial, sans-serif; line-height: 1.6; color: #333; }}
         .container {{ max-width: 600px; margin: 0 auto; padding: 20px; }}
-        .header {{ background-color: {(notification.Estado == "Finalizado" ? "#4CAF50" : "#f44336")}; color: white; padding: 20px; text-align: center; }}
+        .header {{ background-color: {headerColor}; color: white; padding: 20px; text-align: center; }}
         .content {{ background-color: #f9f9f9; padding: 20px; margin-top: 20px; }}
         .info-row {{ margin: 10px 0; }}
         .label {{ font-weight: bold; }}
@@ -179,7 +216,7 @@ namespace Notification.Application.Commands.SendCargaNotification
 <body>
     <div class=""container"">
         <div class=""header"">
-            <h2>{(notification.Estado == "Finalizado" ? "✅ Carga Finalizada" : "❌ Carga Rechazada")}</h2>
+            <h2>{headerTitle}</h2>
         </div>
 
         <div class=""content"">
@@ -226,6 +263,26 @@ namespace Notification.Application.Commands.SendCargaNotification
                 </tr>
             </table>
 ";
+
+                // Si todos los registros fallaron, agregar mensaje de advertencia
+                if (todosLosRegistrosFallaron)
+                {
+                    html += $@"
+            <div class=""info-row"" style=""margin-top: 20px; padding: 15px; background-color: #fff3cd; border-left: 4px solid #FF9800;"">
+                <span class=""label"" style=""color: #856404;"">⚠️ Advertencia:</span><br/>
+                <span style=""color: #856404;"">
+                    Ningún registro fue insertado exitosamente. Todos los registros presentaron errores durante el procesamiento.
+                    <br/><br/>
+                    <strong>Recomendaciones:</strong>
+                    <ul style=""margin: 10px 0; padding-left: 20px;"">
+                        <li>Revise el archivo Excel para verificar el formato de los datos</li>
+                        <li>Verifique que no haya códigos de producto duplicados</li>
+                        <li>Consulte la tabla de fallos para ver los detalles de cada error</li>
+                    </ul>
+                </span>
+            </div>
+";
+                }
             }
 
             if (notification.Estado == "Rechazado" && !string.IsNullOrEmpty(notification.Motivo))

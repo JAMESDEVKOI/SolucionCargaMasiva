@@ -206,6 +206,7 @@ namespace BulkProcessor.Application.Commands.ProcessCargaMasivaMessage
                 // 7. Procesar filas: validar duplicados e insertar
                 var dataToInsert = new List<DataProcesada>();
                 var fallos = new List<CargaFallo>();
+                var codigosEnArchivo = new HashSet<string>(StringComparer.OrdinalIgnoreCase);
                 int procesados = 0;
 
                 foreach (var row in rowsList)
@@ -227,7 +228,22 @@ namespace BulkProcessor.Application.Commands.ProcessCargaMasivaMessage
                         continue;
                     }
 
-                    // Validar duplicidad por CodigoProducto
+                    // Validar duplicidad DENTRO del mismo archivo
+                    if (codigosEnArchivo.Contains(row.CodigoProducto))
+                    {
+                        fallos.Add(new CargaFallo
+                        {
+                            IdCarga = message.IdCarga,
+                            RowNumber = row.RowNumber,
+                            CodigoProducto = row.CodigoProducto,
+                            Motivo = "Duplicado en archivo",
+                            RawData = JsonSerializer.Serialize(row.RawData),
+                            CreatedAt = DateTime.UtcNow
+                        });
+                        continue;
+                    }
+
+                    // Validar duplicidad por CodigoProducto en BD
                     var existe = await _dataRepository.ExistsByCodigoProductoAsync(
                         row.CodigoProducto,
                         cancellationToken);
@@ -239,12 +255,15 @@ namespace BulkProcessor.Application.Commands.ProcessCargaMasivaMessage
                             IdCarga = message.IdCarga,
                             RowNumber = row.RowNumber,
                             CodigoProducto = row.CodigoProducto,
-                            Motivo = "Existente",
+                            Motivo = "Existente en BD",
                             RawData = JsonSerializer.Serialize(row.RawData),
                             CreatedAt = DateTime.UtcNow
                         });
                         continue;
                     }
+
+                    // Marcar código como procesado en este archivo
+                    codigosEnArchivo.Add(row.CodigoProducto);
 
                     // Agregar a lista de inserción
                     dataToInsert.Add(new DataProcesada

@@ -86,7 +86,7 @@ services:
     container_name: bulkload-seaweedfs-volume
     command: volume -mserver=seaweedfs-master:9333 -ip=seaweedfs-volume -port=8080 -dir=/data
     ports:
-      - "8080:8080"
+      - "8081:8080"
     volumes:
       - seaweedfs-volume-data:/data
     networks:
@@ -273,7 +273,7 @@ services:
       - SmtpSettings__Host=smtp.gmail.com
       - SmtpSettings__Port=587
       - SmtpSettings__User=jamescapchaflores97@gmail.com
-      - SmtpSettings__Password=your-app-password
+      - SmtpSettings__Password=aguk exoz iwlt vqjr
       - SmtpSettings__FromEmail=noreply@bulkload.com
       - SmtpSettings__FromName=Sistema de Carga Masiva
       - SmtpSettings__UseStartTLS=true

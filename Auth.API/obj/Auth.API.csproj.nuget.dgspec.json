@@ -1,23 +1,23 @@
 {
   "format": 1,
   "restore": {
-    "D:\\proyect2025\\Net\\SENIOR\\SolucionCargaMasiva\\Auth.API\\Auth.API.csproj": {}
+    "D:\\PRUEBA TECNICA\\SolucionCargaMasiva\\Auth.API\\Auth.API.csproj": {}
   },
   "projects": {
-    "D:\\proyect2025\\Net\\SENIOR\\SolucionCargaMasiva\\Auth.API\\Auth.API.csproj": {
+    "D:\\PRUEBA TECNICA\\SolucionCargaMasiva\\Auth.API\\Auth.API.csproj": {
       "version": "1.0.0",
       "restore": {
-        "projectUniqueName": "D:\\proyect2025\\Net\\SENIOR\\SolucionCargaMasiva\\Auth.API\\Auth.API.csproj",
+        "projectUniqueName": "D:\\PRUEBA TECNICA\\SolucionCargaMasiva\\Auth.API\\Auth.API.csproj",
         "projectName": "Auth.API",
-        "projectPath": "D:\\proyect2025\\Net\\SENIOR\\SolucionCargaMasiva\\Auth.API\\Auth.API.csproj",
-        "packagesPath": "C:\\Users\\Usuario\\.nuget\\packages\\",
-        "outputPath": "D:\\proyect2025\\Net\\SENIOR\\SolucionCargaMasiva\\Auth.API\\obj\\",
+        "projectPath": "D:\\PRUEBA TECNICA\\SolucionCargaMasiva\\Auth.API\\Auth.API.csproj",
+        "packagesPath": "C:\\Users\\jcapcha\\.nuget\\packages\\",
+        "outputPath": "D:\\PRUEBA TECNICA\\SolucionCargaMasiva\\Auth.API\\obj\\",
         "projectStyle": "PackageReference",
         "fallbackFolders": [
           "C:\\Program Files (x86)\\Microsoft Visual Studio\\Shared\\NuGetPackages"
         ],
         "configFilePaths": [
-          "C:\\Users\\Usuario\\AppData\\Roaming\\NuGet\\NuGet.Config",
+          "C:\\Users\\jcapcha\\AppData\\Roaming\\NuGet\\NuGet.Config",
           "C:\\Program Files (x86)\\NuGet\\Config\\Microsoft.VisualStudio.FallbackLocation.config",
           "C:\\Program Files (x86)\\NuGet\\Config\\Microsoft.VisualStudio.Offline.config"
         ],
@@ -26,17 +26,18 @@
         ],
         "sources": {
           "C:\\Program Files (x86)\\Microsoft SDKs\\NuGetPackages\\": {},
+          "C:\\Program Files\\dotnet\\library-packs": {},
           "https://api.nuget.org/v3/index.json": {}
         },
         "frameworks": {
           "net8.0": {
             "targetAlias": "net8.0",
             "projectReferences": {
-              "D:\\proyect2025\\Net\\SENIOR\\SolucionCargaMasiva\\Auth.Application\\Auth.Application.csproj": {
-                "projectPath": "D:\\proyect2025\\Net\\SENIOR\\SolucionCargaMasiva\\Auth.Application\\Auth.Application.csproj"
+              "D:\\PRUEBA TECNICA\\SolucionCargaMasiva\\Auth.Application\\Auth.Application.csproj": {
+                "projectPath": "D:\\PRUEBA TECNICA\\SolucionCargaMasiva\\Auth.Application\\Auth.Application.csproj"
               },
-              "D:\\proyect2025\\Net\\SENIOR\\SolucionCargaMasiva\\Auth.Infrastructure\\Auth.Infrastructure.csproj": {
-                "projectPath": "D:\\proyect2025\\Net\\SENIOR\\SolucionCargaMasiva\\Auth.Infrastructure\\Auth.Infrastructure.csproj"
+              "D:\\PRUEBA TECNICA\\SolucionCargaMasiva\\Auth.Infrastructure\\Auth.Infrastructure.csproj": {
+                "projectPath": "D:\\PRUEBA TECNICA\\SolucionCargaMasiva\\Auth.Infrastructure\\Auth.Infrastructure.csproj"
               }
             }
           }
@@ -95,24 +96,24 @@
               "privateAssets": "all"
             }
           },
-          "runtimeIdentifierGraphPath": "C:\\Program Files\\dotnet\\sdk\\9.0.303/PortableRuntimeIdentifierGraph.json"
+          "runtimeIdentifierGraphPath": "C:\\Program Files\\dotnet\\sdk\\9.0.305/PortableRuntimeIdentifierGraph.json"
         }
       }
     },
-    "D:\\proyect2025\\Net\\SENIOR\\SolucionCargaMasiva\\Auth.Application\\Auth.Application.csproj": {
+    "D:\\PRUEBA TECNICA\\SolucionCargaMasiva\\Auth.Application\\Auth.Application.csproj": {
       "version": "1.0.0",
       "restore": {
-        "projectUniqueName": "D:\\proyect2025\\Net\\SENIOR\\SolucionCargaMasiva\\Auth.Application\\Auth.Application.csproj",
+        "projectUniqueName": "D:\\PRUEBA TECNICA\\SolucionCargaMasiva\\Auth.Application\\Auth.Application.csproj",
         "projectName": "Auth.Application",
-        "projectPath": "D:\\proyect2025\\Net\\SENIOR\\SolucionCargaMasiva\\Auth.Application\\Auth.Application.csproj",
-        "packagesPath": "C:\\Users\\Usuario\\.nuget\\packages\\",
-        "outputPath": "D:\\proyect2025\\Net\\SENIOR\\SolucionCargaMasiva\\Auth.Application\\obj\\",
+        "projectPath": "D:\\PRUEBA TECNICA\\SolucionCargaMasiva\\Auth.Application\\Auth.Application.csproj",
+        "packagesPath": "C:\\Users\\jcapcha\\.nuget\\packages\\",
+        "outputPath": "D:\\PRUEBA TECNICA\\SolucionCargaMasiva\\Auth.Application\\obj\\",
         "projectStyle": "PackageReference",
         "fallbackFolders": [
           "C:\\Program Files (x86)\\Microsoft Visual Studio\\Shared\\NuGetPackages"
         ],
         "configFilePaths": [
-          "C:\\Users\\Usuario\\AppData\\Roaming\\NuGet\\NuGet.Config",
+          "C:\\Users\\jcapcha\\AppData\\Roaming\\NuGet\\NuGet.Config",
           "C:\\Program Files (x86)\\NuGet\\Config\\Microsoft.VisualStudio.FallbackLocation.config",
           "C:\\Program Files (x86)\\NuGet\\Config\\Microsoft.VisualStudio.Offline.config"
         ],
@@ -121,14 +122,15 @@
         ],
         "sources": {
           "C:\\Program Files (x86)\\Microsoft SDKs\\NuGetPackages\\": {},
+          "C:\\Program Files\\dotnet\\library-packs": {},
           "https://api.nuget.org/v3/index.json": {}
         },
         "frameworks": {
           "net8.0": {
             "targetAlias": "net8.0",
             "projectReferences": {
-              "D:\\proyect2025\\Net\\SENIOR\\SolucionCargaMasiva\\Auth.Domain\\Auth.Domain.csproj": {
-                "projectPath": "D:\\proyect2025\\Net\\SENIOR\\SolucionCargaMasiva\\Auth.Domain\\Auth.Domain.csproj"
+              "D:\\PRUEBA TECNICA\\SolucionCargaMasiva\\Auth.Domain\\Auth.Domain.csproj": {
+                "projectPath": "D:\\PRUEBA TECNICA\\SolucionCargaMasiva\\Auth.Domain\\Auth.Domain.csproj"
               }
             }
           }
@@ -194,24 +196,24 @@
               "privateAssets": "all"
             }
           },
-          "runtimeIdentifierGraphPath": "C:\\Program Files\\dotnet\\sdk\\9.0.303/PortableRuntimeIdentifierGraph.json"
+          "runtimeIdentifierGraphPath": "C:\\Program Files\\dotnet\\sdk\\9.0.305/PortableRuntimeIdentifierGraph.json"
         }
       }
     },
-    "D:\\proyect2025\\Net\\SENIOR\\SolucionCargaMasiva\\Auth.Domain\\Auth.Domain.csproj": {
+    "D:\\PRUEBA TECNICA\\SolucionCargaMasiva\\Auth.Domain\\Auth.Domain.csproj": {
       "version": "1.0.0",
       "restore": {
-        "projectUniqueName": "D:\\proyect2025\\Net\\SENIOR\\SolucionCargaMasiva\\Auth.Domain\\Auth.Domain.csproj",
+        "projectUniqueName": "D:\\PRUEBA TECNICA\\SolucionCargaMasiva\\Auth.Domain\\Auth.Domain.csproj",
         "projectName": "Auth.Domain",
-        "projectPath": "D:\\proyect2025\\Net\\SENIOR\\SolucionCargaMasiva\\Auth.Domain\\Auth.Domain.csproj",
-        "packagesPath": "C:\\Users\\Usuario\\.nuget\\packages\\",
-        "outputPath": "D:\\proyect2025\\Net\\SENIOR\\SolucionCargaMasiva\\Auth.Domain\\obj\\",
+        "projectPath": "D:\\PRUEBA TECNICA\\SolucionCargaMasiva\\Auth.Domain\\Auth.Domain.csproj",
+        "packagesPath": "C:\\Users\\jcapcha\\.nuget\\packages\\",
+        "outputPath": "D:\\PRUEBA TECNICA\\SolucionCargaMasiva\\Auth.Domain\\obj\\",
         "projectStyle": "PackageReference",
         "fallbackFolders": [
           "C:\\Program Files (x86)\\Microsoft Visual Studio\\Shared\\NuGetPackages"
         ],
         "configFilePaths": [
-          "C:\\Users\\Usuario\\AppData\\Roaming\\NuGet\\NuGet.Config",
+          "C:\\Users\\jcapcha\\AppData\\Roaming\\NuGet\\NuGet.Config",
           "C:\\Program Files (x86)\\NuGet\\Config\\Microsoft.VisualStudio.FallbackLocation.config",
           "C:\\Program Files (x86)\\NuGet\\Config\\Microsoft.VisualStudio.Offline.config"
         ],
@@ -220,6 +222,7 @@
         ],
         "sources": {
           "C:\\Program Files (x86)\\Microsoft SDKs\\NuGetPackages\\": {},
+          "C:\\Program Files\\dotnet\\library-packs": {},
           "https://api.nuget.org/v3/index.json": {}
         },
         "frameworks": {
@@ -265,24 +268,24 @@
               "privateAssets": "all"
             }
           },
-          "runtimeIdentifierGraphPath": "C:\\Program Files\\dotnet\\sdk\\9.0.303/PortableRuntimeIdentifierGraph.json"
+          "runtimeIdentifierGraphPath": "C:\\Program Files\\dotnet\\sdk\\9.0.305/PortableRuntimeIdentifierGraph.json"
         }
       }
     },
-    "D:\\proyect2025\\Net\\SENIOR\\SolucionCargaMasiva\\Auth.Infrastructure\\Auth.Infrastructure.csproj": {
+    "D:\\PRUEBA TECNICA\\SolucionCargaMasiva\\Auth.Infrastructure\\Auth.Infrastructure.csproj": {
       "version": "1.0.0",
       "restore": {
-        "projectUniqueName": "D:\\proyect2025\\Net\\SENIOR\\SolucionCargaMasiva\\Auth.Infrastructure\\Auth.Infrastructure.csproj",
+        "projectUniqueName": "D:\\PRUEBA TECNICA\\SolucionCargaMasiva\\Auth.Infrastructure\\Auth.Infrastructure.csproj",
         "projectName": "Auth.Infrastructure",
-        "projectPath": "D:\\proyect2025\\Net\\SENIOR\\SolucionCargaMasiva\\Auth.Infrastructure\\Auth.Infrastructure.csproj",
-        "packagesPath": "C:\\Users\\Usuario\\.nuget\\packages\\",
-        "outputPath": "D:\\proyect2025\\Net\\SENIOR\\SolucionCargaMasiva\\Auth.Infrastructure\\obj\\",
+        "projectPath": "D:\\PRUEBA TECNICA\\SolucionCargaMasiva\\Auth.Infrastructure\\Auth.Infrastructure.csproj",
+        "packagesPath": "C:\\Users\\jcapcha\\.nuget\\packages\\",
+        "outputPath": "D:\\PRUEBA TECNICA\\SolucionCargaMasiva\\Auth.Infrastructure\\obj\\",
         "projectStyle": "PackageReference",
         "fallbackFolders": [
           "C:\\Program Files (x86)\\Microsoft Visual Studio\\Shared\\NuGetPackages"
         ],
         "configFilePaths": [
-          "C:\\Users\\Usuario\\AppData\\Roaming\\NuGet\\NuGet.Config",
+          "C:\\Users\\jcapcha\\AppData\\Roaming\\NuGet\\NuGet.Config",
           "C:\\Program Files (x86)\\NuGet\\Config\\Microsoft.VisualStudio.FallbackLocation.config",
           "C:\\Program Files (x86)\\NuGet\\Config\\Microsoft.VisualStudio.Offline.config"
         ],
@@ -291,17 +294,18 @@
         ],
         "sources": {
           "C:\\Program Files (x86)\\Microsoft SDKs\\NuGetPackages\\": {},
+          "C:\\Program Files\\dotnet\\library-packs": {},
           "https://api.nuget.org/v3/index.json": {}
         },
         "frameworks": {
           "net8.0": {
             "targetAlias": "net8.0",
             "projectReferences": {
-              "D:\\proyect2025\\Net\\SENIOR\\SolucionCargaMasiva\\Auth.Application\\Auth.Application.csproj": {
-                "projectPath": "D:\\proyect2025\\Net\\SENIOR\\SolucionCargaMasiva\\Auth.Application\\Auth.Application.csproj"
+              "D:\\PRUEBA TECNICA\\SolucionCargaMasiva\\Auth.Application\\Auth.Application.csproj": {
+                "projectPath": "D:\\PRUEBA TECNICA\\SolucionCargaMasiva\\Auth.Application\\Auth.Application.csproj"
               },
-              "D:\\proyect2025\\Net\\SENIOR\\SolucionCargaMasiva\\Auth.Domain\\Auth.Domain.csproj": {
-                "projectPath": "D:\\proyect2025\\Net\\SENIOR\\SolucionCargaMasiva\\Auth.Domain\\Auth.Domain.csproj"
+              "D:\\PRUEBA TECNICA\\SolucionCargaMasiva\\Auth.Domain\\Auth.Domain.csproj": {
+                "projectPath": "D:\\PRUEBA TECNICA\\SolucionCargaMasiva\\Auth.Domain\\Auth.Domain.csproj"
               }
             }
           }
@@ -373,7 +377,7 @@
               "privateAssets": "all"
             }
           },
-          "runtimeIdentifierGraphPath": "C:\\Program Files\\dotnet\\sdk\\9.0.303/PortableRuntimeIdentifierGraph.json"
+          "runtimeIdentifierGraphPath": "C:\\Program Files\\dotnet\\sdk\\9.0.305/PortableRuntimeIdentifierGraph.json"
         }
       }
     }

@@ -52,13 +52,14 @@ namespace BulkProcessor.Infrastructure.Services
                             continue;
                         }
 
-                        var codigoProducto = GetCellValue(row, 1);
-                        var nombreProducto = GetCellValue(row, 2);
-                        var categoria = GetCellValue(row, 3);     
-                        var precioStr = GetCellValue(row, 4);     
-                        var stockStr = GetCellValue(row, 5);      
-                        var proveedor = GetCellValue(row, 6);     
-                        var descripcion = GetCellValue(row, 7);   
+                        // Columna 1: Periodo (se ignora, ya viene en el mensaje)
+                        var codigoProducto = GetCellValue(row, 2);
+                        var nombreProducto = GetCellValue(row, 3);
+                        var precioStr = GetCellValue(row, 4);
+                        var categoria = GetCellValue(row, 5);
+                        var stockStr = GetCellValue(row, 6);
+                        var proveedor = GetCellValue(row, 7);
+                        var descripcion = GetCellValue(row, 8);   
 
                         nombreProducto = string.IsNullOrWhiteSpace(nombreProducto) ? "Sin nombre" : nombreProducto;
                         categoria = string.IsNullOrWhiteSpace(categoria) ? "General" : categoria;

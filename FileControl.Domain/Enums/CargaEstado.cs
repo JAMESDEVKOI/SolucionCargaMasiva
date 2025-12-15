@@ -4,8 +4,10 @@ namespace FileControl.Domain.Enums
     {
         Pendiente = 0,
         EnProceso = 1,
-        Completada = 2,
-        Fallida = 3,
-        Cancelada = 4
+        Cargado = 2,
+        Finalizado = 3,
+        Rechazado = 4,
+        Notificado = 5,
+        Fallida = 6
     }
 }
