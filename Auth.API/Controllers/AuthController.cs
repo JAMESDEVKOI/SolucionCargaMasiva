@@ -71,11 +71,11 @@ namespace Auth.API.Controllers
         }
 
         [HttpPost("logout")]
-        [Authorize]
+        [AllowAnonymous]
         [ProducesResponseType(StatusCodes.Status204NoContent)]
-        [ProducesResponseType(StatusCodes.Status400BadRequest)]
         public async Task<IActionResult> Logout(CancellationToken cancellationToken)
         {
+            // Intentar obtener información del usuario desde los claims
             var userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
             var sessionId = User.FindFirstValue("SessionId");
 
@@ -88,19 +88,39 @@ namespace Auth.API.Controllers
                     .Replace("Bearer ", "");
             }
 
-            if (string.IsNullOrEmpty(userId) || string.IsNullOrEmpty(sessionId))
+            // Si tenemos userId y sessionId, intentar invalidar la sesión en el backend
+            if (!string.IsNullOrEmpty(userId) && !string.IsNullOrEmpty(sessionId) && !string.IsNullOrEmpty(accessToken))
             {
-                return BadRequest(new { error = "Auth.InvalidToken", message = "Token inválido" });
+                try
+                {
+                    var command = new LogoutCommand(userId, sessionId, accessToken);
+                    await _sender.Send(command, cancellationToken);
+                    // Ignoramos el resultado - si falla, igual continuamos
+                }
+                catch
+                {
+                    // Ignoramos errores - el usuario puede hacer logout incluso si falla la invalidación
+                }
             }
 
-            var command = new LogoutCommand(userId, sessionId, accessToken);
-            var result = await _sender.Send(command, cancellationToken);
-
-            if (result.IsFailure)
+            // SIEMPRE limpiar las cookies, sin importar si el token era válido o no
+            HttpContext.Response.Cookies.Delete("access_token", new CookieOptions
             {
-                return BadRequest(new { error = result.Error.Code, message = result.Error.Message });
-            }
+                HttpOnly = true,
+                Secure = true,
+                SameSite = SameSiteMode.None,
+                Path = "/"
+            });
 
+            HttpContext.Response.Cookies.Delete("refresh_token", new CookieOptions
+            {
+                HttpOnly = true,
+                Secure = true,
+                SameSite = SameSiteMode.None,
+                Path = "/"
+            });
+
+            // SIEMPRE retornar éxito
             return NoContent();
         }
 
